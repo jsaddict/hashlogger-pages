@@ -1,65 +1,680 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
+
+<head>
     <meta charset="UTF-8">
-    <title>Hashlogger-pages by jsaddict</title>
+    <title>hashLogger</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
+    <link rel="stylesheet" type="text/css" href="stylesheets/customize.css" media="screen">
+</head>
+
+<body>
     <section class="page-header">
-      <h1 class="project-name">Hashlogger-pages</h1>
-      <h2 class="project-tagline">documentation and demo for hashlogger</h2>
-      <a href="https://github.com/jsaddict/hashlogger-pages" class="btn">View on GitHub</a>
-      <a href="https://github.com/jsaddict/hashlogger-pages/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/jsaddict/hashlogger-pages/tarball/master" class="btn">Download .tar.gz</a>
+        <h1 class="project-name"><img src="images/hashlogger.png" alt="hashlogger"></h1>
+        <h2 class="project-tagline">track logs and errors in smart way</h2>
+        <a href="http://jsaddict.com" id="jsaddict"><img src="images/jsaddict.jpg"></a>
+        <a href="https://github.com/jsaddict/hashlogger" class="btn">View on GitHub</a>
+        <!-- <a href="https://github.com/jsaddict/hashlogger" class="btn">Download GUI</a> -->
+        <a href="#demo" class="btn">Demo</a>
+        <a href="#documentation" class="btn">Documentation</a>
+        <div id="hire-me" class="clearfix">
+            <div id="hire">
+                <p><span class="hire-me-text">Hire Me</span></br>Fulltime / Contract</p>
+            </div>
+            <div id="em-ad">
+                <img src="images/em-black.png">
+            </div>
+        </div>
     </section>
-
     <section class="main-content">
-      <h3>
-<a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h3>Why hashLogger ?</h3>
+        <p>Store logs in the form of meaningful tags to avoid complex parsing of stored logs in text format. </p>
+        <ul>
+            <li>Track log count dynamically</li>
+            <li>Compatible for single and multiserver environments</li>
+            <li>Built in <i>error wrapper</i> allows tracking and troubleshooting of errors easily</li>
+            <li>Set threshold 'maximum' and 'minimum' to alert and store them</li>
+            <li>Observe the behavior of application through dynamic charts</li>
+        </ul>
+        <h3>How it works ?</h3>
+        <p>hashLogger tracks in three main categories Error, Warn and Info. When you include this module, three global functions 'err', 'warn' and 'info' are created (we can change the names of these global functions during configuration). We can use tags in different formats and scenarios to check by 'issue', 'functionality', 'function name', 'geography', 'server', 'user type'...etc.</p>
+        <h3>Tag format</h3>
+        <p><i>mainTag@subTag1#subTag2 .... #subTagN</i></p>
+        <ul>
+            <li>absoluteTag (or) tag String - it is full tag string 'mainTag@subTag1#subTag2 ..#subTagN'</li>
+            <li>mainTag - it is the string before '@'. if no '@' then mainTag is absoluteTag </li>
+            <li>subTag - these are strings separated by '#' after '@'</li>
+        </ul>
+        <pre><code>
+/**
+ * What functionalities are broken ?
+ */
+err('functonalityIssue')
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+err('no-data-inserted');
+err('payment-error');
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+
+/**
+ * What are the reasons(issues) for breaking certain functionality ?
+ */
+err('functonalityIssue@reason')     
+
+err('no-data-inserted@db-connection-error');
+err('payment-error@user-timeout');
+
+
+/**
+ * What are the issues?
+ */
+err('issue')
+
+err('db-connection-error');
+err('user-timeout');
+
+
+/**
+ * What are the issues and their 'info' or 'sub type' or 'reason' ... etc ?
+ */
+err('issue@issue-subtype')
+
+err('db-connection-error@db-server-down');
+err('authentication-error@incorrect-password');
+err('authentication-error@no-user-found');
+
+
+/**
+ * Which functonalities are broken because of certain issue?
+ */
+err('issue@functionality') 
+
+err('db-connection-error@no-data-inserted');
+err('user-timeout@payment-error');
+
+
+/**
+ * 
+ * We can give multiple tags
+ * 
+ */
+err('user-not-found@databaseError#log-in');
+
+
+/**
+ * subTags are tracked individually, through above tag we can track 
+ * 1) 'user-not-found' because of 'databaseError' 
+ * 2) 'user-not-found' occured at 'log-in' functionality.
+ * 
+ * If we want to track 'user-not-found' because of 'databaseError' at 'log-in' functionality
+ * we have to create on more tag like 'databaseError-at-log-in'.
+ * err('user-not-found@databaseError#log-in#databaseError-at-log-in') or
+ * err('user-not-found@databaseError-at-log-in')
+ */
+
+/**
+ * Examples
+ */
+err('databaseError@user-not-found#log-in')
+err('databaseError@user-not-found#api')
+err('databaseError@user-not-found#search')
+err('paymentError@timeout')
+err('no-response@third-party-server#google-store-api')
+warn('no-response@user-input')
+warn('sessionExpired@product-view')
+</code></pre>
+        <p>In database these tags are stored in JSON format and grouped by mainTag. subTag stores the count (number of times it called). If no subTag is given (mainTag is absoluteTag), 'no-tag' is added by default. A tag 'tag-total' is used to store the total of all subTags in a mainTag group. </p>
+        <pre><code>
+err('mainTagE1@subTagE11#subTagE12#subTagE13');
+err('mainTagE2@subTagE21');
+err('mainTagE3');
+// calling again increments the count
+err('mainTagE1@subTagE12')
+
+warn('mainTagW1@subTagW11#subTagW12#subTagW13');
+warn('mainTagW2@subTagW21');
+warn('mainTagW3');
+warn('mainTagW3@subTagW31');
+
+info('mainTagI1@subTagI11#subTagI12#subTagI13');
+info('mainTagI2@subTagI21');
+info('mainTagI3');
+info('mainTagI2@subTagI21#subTagI22');
+
+/**
+ * Tags are stored in the following format
+ * This data object is used to plot the chart and we can set 'max' and 'min' threshold.
+ */
+
+{
+    time : 'timestamp',
+    data : {
+        err : {
+            'mainTagE1' : {
+                'subTagE11' : 1,
+                'subTagE12' : 2,
+                'subTagE13' : 1,
+                'tag-total' : 4
+            },
+            'mainTagE2' : {
+                'subTagE21' : 1,
+                'tag-total' : 1
+            },
+            'mainTagE3' : {
+                'no-tag' : 1,
+                'tag-total' : 1
+            }
+        },
+        warn : {
+            'mainTagW1' : {
+                'subTagW11' : 1,
+                'subTagW12' : 1,
+                'subTagW13' : 1,
+                'tag-total' : 3
+            },
+            'mainTagW2' : {
+                'subTagW21' : 1,
+                'tag-total' : 1
+            },
+            'mainTagW3' : {
+                'no-tag' : 1,
+                'subTagW31' : 1,
+                'tag-total' : 2
+            }
+        },
+        info : {
+            'mainTagI1' : {
+                'subTagI11' : 1,
+                'subTagI12' : 1,
+                'subTagI13' : 1,
+                'tag-total' : 3
+            },
+            'mainTagI2' : {
+                'subTagI21' : 2,
+                'subTagI22' : 1,
+                'tag-total' : 3
+            },
+            'mainTagI3' : {
+                'no-tag' : 1,
+                'tag-total' : 1
+            }
+        }
+    }
+}
+</code></pre>
+        <!-- <h3>Tracking and formatting strings</h3> -->
+        <p>'err', 'warn' and 'info' returns an object that has a method 'm' to format strings, and property 'msg' to get that.</p>
+        <pre><code>
+/**
+ * It tracks and returns the message.
+ */
+err('mainTag@subTag1#subTag2').m('hello %s','world').msg => 'hello world'
+warn('mainTag@subTag1#subTag2').m('hello world').msg => 'hello world'
+info('mainTag@subTag1#subTag2').m('hello world').msg => 'hello world'
+</code></pre>
+        <h3>Creating and Wrapping errors with 'err' </h3>
+        <h4>Creating Errors :</h4>
+        <p>If first argument is 'tagString', it creates and tracks error object. name of the error will be 'mainTag' in tagString.</p>
+        <ul>
+            <li>set the error message throught method 'm'</li>
+            <li>get the message through 'msg' property</li>
+            <li>get error object uding 'obj' property</li>
+        </ul>
+        <pre><code>
+var errorObj = err('mainTag@subTag').m('error message').obj;
+
+errorObj instanceof Error; // true
+'error message' == errorObj.message; // true
+'mainTag' == errorObj.mainTag; // true
+throw errorObj;
+throw err('mainTag@subTag').m('error message').obj;
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+        <h4>Wrapping Errors :</h4>
+        <p>If first argument is 'error Object', and second argument is 'tag String' then message of 'error Object' is appended to 'current message' that we set with method 'm' and assign the whole string to 'message' property of 'error Object'. We can get the modified error object through 'obj' property.</p>
+        <pre><code>
+var baseError = new Error('base error message');
+// track and wrap the error at the same time
+var errorObj = err(baseError, 'mainTag@subTag').m('current error message').obj;
 
-<h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+errorObj instanceof Error; // true
+'current error message -> base error message' == errorObj.message; // true
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+</code></pre>
+        <div id="demo">
+            <h2>Demo</h2>
+            <p>I have created a <a href="https://github.com/jsaddict/hashlogger-demo">demo app</a> to explain how to use and configure hashLogger. <a href="https://github.com/jsaddict/hashlogger-demo">Check hashlogger demo</a></p>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/lWkXknYkRLc" frameborder="0" allowfullscreen></iframe>
+            <div id="demo-images">
+                <div class="demo-image-wrapper">
+                    <img src="images/realtime.jpg" alt="real time update" class="demo-image">
+                    <p class="demo-image-text">plotting live data</p>
+                </div>
+                <div class="demo-image-wrapper">
+                    <img src="images/threshold.jpg" alt="setting threshold" class="demo-image">
+                    <p class="demo-image-text">setting threshold</p>
+                </div>
+                <div class="demo-image-wrapper">
+                    <img src="images/gridview.jpg" alt="real time grid view" class="demo-image">
+                    <p class="demo-image-text">real time grid view</p>
+                </div>
+                <div class="demo-image-wrapper">
+                    <img src="images/settings.jpg" alt="settings" class="demo-image">
+                    <p class="demo-image-text">settings</p>
+                </div>
+            </div>
+        </div>
+        <div id="documentation">
+            <h3>How to use ?</h3>
+            <p>I have created a <a href="https://github.com/jsaddict/hashlogger-demo">demo app</a> to explain how to use and configure hashLogger. <a href="https://github.com/jsaddict/hashlogger-demo">Check hashlogger demo</a></p>
+            <p>install hashLogger and include GUI folder (you can find it inside hashlogger module) in your app.</p>
+            <pre><code>
+var hashlogger = require('hashlogger');
 
-<h3>
-<a id="rather-drive-stick" class="anchor" href="#rather-drive-stick" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+/**
+ * appConfiguration and databaseConfiguration are mandatory. serverDetails is optional
+ * appConfiguration       => configuring functionality
+ * databaseConfiguration  => database settings for storing and getting data
+ * serverDetails          => details of server instance like address, port, geography ..etc.
+ *                           (to identify logs by instance)
+ */
+hashlogger().init(appConfiguration, databaseConfiguration, serverDetails);
+</code></pre>
+            <h3>Server Configuration</h3>
+            <!-- <p>We have to configure</p> -->
+            <ul>
+                <li>App</li>
+                <li>Database</li>
+                <li>Path</li>
+            </ul>
+            <h3>Configuring App</h3>
+            <p></p>
+            <pre><code>{
+    /**
+     * By default, global functions are err, warn and info. If any of those names are already used or we want 
+     * custom names, we can overwrite those names here.
+     */
+    api: {
+        err : 'custom error function name',
+        warn : 'custom warn function name',
+        info : 'custom info function name'
+    },
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+    /**
+     * It is mandatory 
+     * Anyone can access 'aggregatorUrl', to make it secure we use 'aggregatorToken'
+     */
+    aggregatorToken : 'some complex string',
+    
+    /**
+     * Url of the aggregation server
+     * It is mandatory field. It is the absolute url of the aggregator we are giving at 'path configuration'
+     * Example : If we have 3 servers, server1.app.com, server2.app.com, server3.app.com and we want server2 
+     * to be aggregation server, then aggregatorUrl will be 
+     * "http://server2.app.com/"+path-configuration-url
+     */
+    aggregatorUrl: "http://aggregator server/"+path-configuration-url,
 
-<h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+    /**
+     * Should be a function
+     * It will be called on each instance repeatedly at minimum cron interval
+     * User can know count by instance
+     * parameters (config, serverInfo, instanceData)
+     * 'config' : configuration object. can use database methods as 'config.db[dbMethodName]'
+     * 'serverInfo' : If init is called with 3rd argument as server details, you can get that as 'serverInfo' to identify count by instance
+     * 'instanceData' : count data for the particular instance
+     */
+    instanceDataHandler : function(config, serverInfo, instanceData){},
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+    /**
+     * Should be a function
+     * It will be called only on aggregation server repeatedly at minimum cron interval
+     * parameters (config, serverInfo, aggregationData)
+     * 
+     */
+    aggregateDataHandler : function(config, serverInfo, aggregationData){},
+    
+    /**
+     * Intervals the count has to be tracked
+     * Always minInterval type array elements should be divisible by first element
+     * and minInterval should be a factor for 60 (if type is seconds, minutes) for 24 (if type is hours)
+     */
+    interval: {
+        seconds : [5, 15, 30],
+        minutes : [5, 15, 30],
+        hours : [1, 6, 12],
+        days : [1, 7],
+        months : [1, 3]
+    },
 
-<h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+    /**
+     * If any error occur inside the module, there are two options.
+     * Whether throw the error (If we do this whole application may be affected) or console the message
+     * In Testing or debugging mode, it is better to throw errors and In production mode, we can console the error
+     * Options : 'throw-error', 'log-error' or function(){}
+     * The function takes an object as parameter
+     *                       function({
+     *                         name : 'critical/no-track/no-info/no-plot',
+     *                         type : 'err/warn/info',
+     *                         message : 'error while updating tags',
+     *                         errorObj : err
+     *                     });
+     *  'name' : represents the level of error
+     *  'type' : name of global function in which the error occured
+     *  'message' : error message
+     *  'errorObj' : optional error object
+     * We can create custom function, that will alert during error.
+     */
+    handleError : 'throw-error',
+    
+    /**
+     * settings for err api function
+     */
+    err : {
+        /**
+         * control error tracking using 'track'.
+         * if track : false, it won't track any err tags.
+         */
+        track : true,
 
-<p>Having trouble with Pages? Check out the documentation at <a href="https://help.github.com/pages">https://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+        /**
+         * When "no arguments are passed to error" or "arguments are passed with proper format" or "some error occured inside error function" then,
+         * this is default error name, tag name and message. 
+         * tagType will be default error name
+         */
+        defaultTagType : 'globalError',
+        defaultMessage : 'Error!!',
 
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/jsaddict/hashlogger-pages">Hashlogger-pages</a> is maintained by <a href="https://github.com/jsaddict">jsaddict</a>.</span>
+        /**
+         * While wrapping error object, msgSeparator is used to separate messages
+         */
+        msgSeparator : ' -> '
+    },
+    info : {
+        track : true,
+        defaultTagType : 'globalInfo',
+        defaultMessage : 'Info'
+    },
+    warn : {
+        track : true,
+        defaultTagType : 'globalWarn',
+        defaultMessage : 'Warn'
+    },
 
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
+    /**
+     * Sets the threshold for tag count. (for minimum and maximum ) and those exceeds threshold will be tracked
+     * If no threshold then set alert : null
+     * format of alert tags 'global api function'+@+'tag-type'+tag-name
+     */
+    alert : {
+        'err@type4#tag-total' : { max : 15, min : 10},
+        'warn@type1#tag2' : { max : 6},
+        'info@type1#no-tag' : { min : 6}
+    }
+}
+</code>
+</pre>
+            <h3>Configuring Database</h3>
+            <p></p>
+            <pre><code>{
+    /**
+     * All functions must have a callback function and should have atmost two parameters.
+     *      first parameter is error, If no error, then first parameter should be null
+     *      Second parameter is data
+     */
+    
+    /**
+     * Function to get all the tags that are used till now from the database.
+     * If no tags were there, call callback function with two null parameters.
+     * (no tags were stored in the beginning)
+     */
+    getTags : function getTags(callbackFunction){},
 
+    /**
+     * If any additional tags were used, it is used to update tags.
+     * In updateTags, we have to overwrite the existing tags in database with the argument 'tags'.
+     * It is called on every cron interval 
+     */
+    updateTags : function updateTags(tags, callbackFunction){},
+
+    /**
+     * Function to get data between timestamp intervals
+     * Parameters :: 
+     * type : 'seconds/minutes/hours/days/months/years' or 'alerts'
+     * interval : number ( in 5 seconds, interval is 5; in 1 hours, interval is 1) for 'alerts' it is null
+     * from : from timestamp
+     * to : to timestamp
+     * first parameter of the callback function will be error object
+     * second parameter will always be array of objects
+     */
+    getData : function getData(type, interval, from, to, callbackFunction){},
+
+    /**
+     * Function to store data at particular time (timestamp)
+     * Parameters ::
+     * type : 'seconds/minutes/hours/days/months/years' or 'alerts'
+     * interval : number ( in 5 seconds, interval is 5; in 1 hours, interval is 1) for 'alerts' it is null
+     * timestamp : timestamp of data to be stored
+     * data : data to be stored
+     * first parameter of the callback function will be error object
+     * second parameter can be anything
+     */
+    storeData : function storeData(type, interval, timestamp, data, callbackFunction){},
+
+    /**
+     * Function to get data for aggregation between timestamp intervals
+     * On every cron interval only mininum interval count is incremented. To compute count for 
+     * big intervals we have to aggregate count of small (aggregation) intervals.
+     * ( To get count data for 1 hour interval, we have to aggregate count data of 1 minute interval. 
+     * When we call 'getDataForAggregator('hour', 1, xxxxxx, xxxxx, callback)' , callback function
+     * has to return array of count objects of 1 minute interval )
+     *
+     * Parameters ::
+     * type : 'seconds/minutes/hours/days/months/years'
+     * interval : number ( in 5 seconds, interval is 5; in 1 hours, interval is 1)
+     * from : from timestamp
+     * to : to timestamp
+     * first parameter of the callback function will be error object
+     * second parameter will be array aggregation data objects 
+     */
+    getDataForAggregator : function getDataForAggregator(type, interval, from, to, callbackFunction){},
+
+    /**
+     * Function to get last inserted 'count' number of objects
+     * Parameters ::
+     * type : 'seconds/minutes/hours/days/months/years'
+     * interval : number ( in 5 seconds, interval is 5; in 1 hours, interval is 1)
+     * count : number of objects
+     * first parameter of the callback function will be error object
+     * second parameter will be array interval data objects 
+     */
+    getRecentData : function getRecentData(type, interval, count, callbackFunction){}
+}        
+            </code></pre>
+            <h3>Configuring Path</h3>
+            <p>In multiserver environment, all instances send their count to 'aggregatorUrl' of app configuration to aggregate count. We have to configure aggregator url path to handle the aggregation. </p>
+            <pre><code>
+var hashlogger = require('hashlogger')();
+var jsonParser = require('body-parser').json();
+var aggregatorToken = 'token that you have given at app configuration';
+
+/**
+ * here it shows how to configure expressjs
+ * body of POST request object is { token : 'aggregatorToken', data : instance count object}
+ */ 
+
+// handle POST request 
+app.post('/aggregate', jsonParser, function(req,res,next){
+    // check whether the token you received is valid or not
+    if(req.body.token == aggregatorToken){
+        // call handleAggregation() of hashlogger with received data as parameter
+        hashlogger.handleAggregation(req.body.data);
+        res.send('hi');
+    }else{
+        res.send('invalid');
+    }
+});
+</code></pre>
+            <h3>UI Configuratioin</h3>
+            <ul>
+                <li>configure server to get data for UI</li>
+                <li>configure UI for chart and grid views</li>
+            </ul>
+            <h4>Configure server to get data for UI</h4>
+            <p>GET request for 'data path' (path we define at UI configuration of chart and grid views) has to be configured and it should send data in JSON for different query formats. </p>
+            <p>query object to get data between intervals: data should be array of objects</p>
+            <pre><code>
+{
+    format : 'interval',
+    type : 'seconds/minutes/hours/days/months/years',
+    interval : number ( in 5 seconds, interval is 5; in 1 hours, interval is 1),
+    from : from timestamp,
+    to : to timestamp
+}
+</code></pre>
+            <p>query object to get recent data:  data should be array of objects</p>
+            <pre><code>
+{
+    format : 'recent',
+    type : 'seconds/minutes/hours/days/months/years',
+    interval : number ( in 5 seconds, interval is 5; in 1 hours, interval is 1),
+    count : number ( get last inserted 'count' number of data objects) 
+}
+</code></pre>
+            <p>query object to get data greater than or equal to timestamp:  data should be array of objects</p>
+            <pre><code>
+{
+    format : 'timestamp',
+    type : 'seconds/minutes/hours/days/months/years',
+    interval : number ( in 5 seconds, interval is 5; in 1 hours, interval is 1),
+    timestamp : xxxxxx
+}
+</code></pre>
+            <h4>configure UI for chart and grid views</h4>
+            <ul>
+                <li>app</li>
+                <li>chart</li>
+                <li>grid</li>
+            </ul>
+            <h4>configure app GUI</h4>
+            <p>These are configuration settings for both grid and chart view</p>
+            <p>file to edit : gui/config/app.js</p>
+            <pre><code>
+/**
+ * url to get data from server through GET request
+ */
+dataUrl = 'http://localhost:8000/plot-data';
+
+/**
+ * interval to regularly update data in milliseconds
+ */
+plotInterval = 1000;
+
+/**
+ * set maximum and minimum threshold
+ */
+alertTags = {
+    'err@type1#tag1' : { max : 5, min : 2},
+    'warn@type4#no-tag' : { min : 2},
+    'info@type3#tag-total' : { max : 2}
+}
+
+/**
+ * minimum interval in server app configuration
+ */
+minInterval = {
+    type : 'seconds',
+    interval : 2
+}
+
+/**
+ * maximum number of successive update failures after which data updation stops
+ */
+maxUpdateFailures = 5;                
+</code></pre>
+            <h4>configure chart GUI</h4>
+            <p>These are configuration settings for chart view</p>
+            <p>file to edit : gui/config/chart/app.js</p>
+            <pre><code>
+/**
+ * delay in milliseconds after plot pan event to update data
+ */
+plotEventDelay = 700;
+
+/**
+ * all tags that are used
+ * If all tags are stored in the server, then define 'allTagsUrl' and set 'allTags = null'
+ */
+allTags = {
+    err : {
+        mainTagE1 : ['no-tag','tag0e','tag5ew','tag-total'],
+        mainTagE2 : ['tag1e','tag7e','tag-total']
+    },
+    warn : {
+        mainTagW1 : ['no-tag','tag8w','tag2ew','tag-total'],
+        mainTagW2 : ['tag1w','tag40w','tag-total']
+    },
+    info : {
+        mainTagI1 : ['no-tag','tag11i','tag21i','tag-total'],
+        mainTagI2 : ['tag10i','tag4ew','tag-total']
+    }
+}
+
+/**
+ * tags to be plotted by default
+ */
+tagsToBePlotted = {
+    err : {
+        mainTagE1 : ['tag0e','tag-total'],
+        mainTagE2 : ['tag-total']
+    },
+    warn : {
+        mainTagW2 : ['tag40w']
+    },
+    info : {
+        mainTagI1 : ['tag-total'],
+        mainTagI2 : ['tag10i']
+    }
+};
+
+/**
+ * If all tags are stored in the server, then set 'allTags = null' and assign server url to allTagsUrl 
+ */
+allTagsUrl = 'http://localhost:8000/get-tags';                
+</code></pre>
+            <p>Chart view uses <a href="http://www.flotcharts.org/">jQuery Flot</a> library. Refer <a href="https://github.com/flot/flot/blob/master/API.md">jQuery Flot</a>  for configuration settings. We can set different configurations for 'err', 'warn', 'info', 'mainTag' and 'tags' individually.</p>
+            <p>file to edit: gui/config/chart/plot-draw-default.js</p>
+            <pre><code>
+/**
+ * configuration that applies to all tags.
+ */
+var defaultDataConfiguration = {};
+
+/**
+ * color to indicate threshold values
+ */
+var alertColor = '#FF0000';                
+</code></pre>
+            <p>We can configure based on category and tags in these files</p>
+            <p>gui/config/chart/plot-draw-err.js, </br> gui/config/chart/plot-draw-warn.js, </br> gui/config/chart/plot-draw-info.js</p>
+            
+            <p>Setting plot options</p>
+            <p>file to edit: gui/config/chart/plot-draw-options.js</p>
+            <pre><code>
+/**
+ * options for jquery flot library
+ */
+var plotDefaultOptions = {};             
+</code></pre>
+        </div>
+        <footer class="site-footer">
+            <span class="site-footer-owner"><a href="https://github.com/jsaddict/pages">Pages</a> is maintained by <a href="https://github.com/jsaddict">jsaddict</a>.</span>
+            <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+        </footer>
     </section>
-
-  
-  </body>
+</body>
 </html>
-
